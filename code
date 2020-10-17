@@ -100,3 +100,16 @@ if __name__ == '__main__':
 	a = block(key_lenth,m)
 	print(frequency(a, key_lenth))
 	getKey(key_lenth,m)
+
+i、其中IC是计算重合指数的，conincidence(a)是计算平均重合指数的。
+
+
+通过观察发现第一次最接近的0.065的是密钥长度为5的情况。所以输入key_lenth=5。
+
+ii、为密文分组，并得到每组的频率
+
+
+iii、通过之前的分析概率高的前几个字母都可能是由e转换而来的，所以密钥的可能结果如下。
+
+last、输入密钥，观察解密结果判断是否需要重新输入密钥。
+我们很容易发现这些密钥组合有一个完整的单词，就是crypt，输入密钥，解密成功。
