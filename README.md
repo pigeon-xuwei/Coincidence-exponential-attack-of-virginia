@@ -7,7 +7,7 @@
 密的话，这个概率是不变的。其公式是：
 
 ！[Image text]
-(Screenshots/图片1.png)
+(https://github.com/pigeon-xuwei/Coincidence-exponential-attack-of-virginia/blob/main/%E5%9B%BE%E7%89%871.png)
 
 其中n是检验里面字母的总个数，Ni是第i个字母出现的次数，当其约等于0.065的时候即可认为猜想的密钥长度正确。
 
