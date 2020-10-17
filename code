@@ -1,0 +1,102 @@
+from goto import with_goto
+
+def sumed(a):     #统计字符串里面字母个数
+	b=[0]*26
+	for i in range(len(a)):
+		j=ord(a[i])-97
+		b[j] += 1
+	return (b)
+
+def block(n,m):   #n为分组个数，m为密文信息
+	a = []
+	for i in range(n):
+		l = []
+		for j in range(i,len(m),n):
+			l.append(m[j])
+		a.append(l)
+	return (a)
+
+def IC(b):    #计算IC值
+	IC_result = 0.0
+	num = 0.0
+	for i in range(26):
+		IC_result += b[i] * (b[i]-1)
+		num += b[i]
+	IC_result = IC_result / (num*(num-1))
+	return (IC_result)
+
+def conincidence(a):
+	result = []
+	m = 0.0
+	for i in range(len(a)):
+		result.append( IC( sumed(a[i]) ) )
+	for j in range(len(result)):
+		m += result[i]
+	m /= len(result)
+	return (m)
+
+def shift(a,b):
+	t=ord(a)-ord(b)
+	t=t%26
+	t=chr(t+97)
+	return(t)
+
+def iveshift(b):
+	t=(ord(b)-ord('e'))%26
+	return(chr(t+97))
+
+def frequency(a,key_lenth):
+	alphaRate = [0.08167, 0.01492, 0.02782, 0.04253, 0.12705, 0.02228, 0.02015, 0.06094, \
+		0.06996, 0.00153, 0.00772, 0.04025, 0.02406, 0.06749, 0.07507, 0.01929, \
+		0.0009, 0.05987, 0.06327, 0.09056, 0.02758, 0.00978, 0.02360, 0.0015, 0.01974, 0.00074] 
+	kRate = {}
+	for i in range(len(alphaRate)):
+		kRate[chr(97+i)]=alphaRate[i]
+	kRate = sorted( kRate.items(), key=lambda x: x[1],reverse=True)
+	print("正常的字母频率排序",kRate)
+	result=[]
+	for i in range(len(a)):
+		mRate = {}
+		re=[]
+		b = sumed(a[i])
+		for j in range(26):
+			mRate[chr(97+j)]= b[j]/sum(b)
+		mRate = sorted( mRate.items(), key=lambda x: x[1],reverse=True)
+		print("第%d个加密的频率排序\n"%(i+1),mRate)
+		for k in mRate:
+			if len(re)<4:
+				re.append(iveshift(k[0]))
+		result.append(re)
+	print("每列可能出现的密钥：")
+	return(result)
+
+
+def decrypt(c,key):
+	message = ''
+	for i in range(len(c)):
+		message+=shift(c[i],key[ i%len(key) ])
+	return(message)
+
+@with_goto
+def getKey(key_lenth,m):
+	label .begin
+	key = input("请根据频率分析输入长度为%d密钥:"%key_lenth)
+	print(decrypt(m,key))
+	a=int(input("请决定是否继续，1表示继续，0表示完成:"))
+	if a==0:
+		goto .end
+	goto .begin
+	label .end
+	print("该密钥是:%s"%key)
+	return (key)
+
+
+if __name__ == '__main__':
+	m = 'krkpekmcwxtvknugcmkxfwmgmjvpttuflihcumgxafsdajfupgzzmjlkyykxdvccyqiwdncebwhyjmgkazybtdfsitncwdnolqiacmchnhwcgxfzlwtxzlvgqecllhimbnudynagrttgiiycmvyyimjzqaxvkcgkgrawxupmjwqemiptzrtmqdciakjudnnuadfrimbbuvyaeqwshtpuyqhxvyaeffldmtvrjkpllsxtrlnvkiajfukycvgjgibubldppkfpmkkuplafslaqycaigushmqxcityrwukqdftkgrlstncudnnuzteqjrxyafshaqljsljfunhwiqtehncpkgxspkfvbstarlsgkxfibffldmerptrqlygxpfrwxtvbdgqkztmtfsqegumcfararhwerchvygczyzjaacgntgvfktmjvlpmkflpecjqtfdcclbncqwhycccbgeanyciclxncrwxofqieqmcshhdccughsxxvzdnhwtycmcbcrttvmurqlphxnwddkopqtehzapgpfrlkkkcpgadmgxdlrchvygczkerwxyfpawefsawukmefgkmpwqicnhwlnihvycsxckf'
+	for i in range(2,18):
+		a = block(i,m)
+		print("长度为%d"%i,conincidence(a))
+	key_lenth=int(input("通过观察选择一个密钥长度："))
+	a = block(key_lenth,m)
+	print(frequency(a, key_lenth))
+	getKey(key_lenth,m)
